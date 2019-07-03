@@ -135,6 +135,7 @@ def plot_mcmc_diagnostic(chain):
              r'$\ln s^2$', '$v_0$']
 
     ndim = chain.shape[-1]
+    print(chain.shape,ndim, names)
     assert ndim == len(names)
 
     fig, axes = plt.subplots(ndim, 3, figsize=(12, 16), sharex=True)

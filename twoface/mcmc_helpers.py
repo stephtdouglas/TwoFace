@@ -51,6 +51,7 @@ def emcee_worker(task):
 
         with h5py.File(results_filename, 'r') as f:
             samples0 = JokerSamples.from_hdf5(f[apogee_id])
+        logger.debug(samples0)
 
         sample = MAP_sample(data, samples0, joker.params)
         model, samples, sampler = joker.mcmc_sample(data, sample,
@@ -59,6 +60,7 @@ def emcee_worker(task):
                                                     n_walkers=n_walkers,
                                                     return_sampler=True)
 
+        logger.debug(sampler.chain.shape)
         np.save(chain_path, sampler.chain[:, n_steps//2:].astype('f4'))
 
         if not path.exists(model_path):
@@ -79,7 +81,7 @@ def emcee_worker(task):
 
         with open(model_path, 'rb') as f:
             model = pickle.load(f)
-        samples = model.unpack_samples_mcmc(chain[:, -1])
+        samples = model.unpack_samples(chain[:, -1])
         samples.t0 = Time(data._t0_bmjd, format='mjd', scale='tcb')
         fig = plot_data_orbits(data, samples)
         fig.savefig(orbits_plot_path, dpi=250)

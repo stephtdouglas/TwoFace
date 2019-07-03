@@ -60,9 +60,11 @@ def MAP_sample(data, samples, joker_params, return_index=False):
 
     ln_ps = np.zeros(len(samples))
 
-    mcmc_p = model.pack_samples_mcmc(samples)
+    mcmc_p = model.pack_samples(samples)
+    logger.debug("in MAP",mcmc_p)
     for i in range(len(samples)):
-        ln_ps[i] = model.ln_posterior(mcmc_p[i])
+        logger.debug("in loop",mcmc_p[i],mcmc_p.T[i])
+        ln_ps[i] = model.ln_posterior(mcmc_p.T[i])
 
     if return_index:
         idx = np.argmax(ln_ps)
