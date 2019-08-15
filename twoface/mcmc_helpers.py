@@ -46,6 +46,7 @@ def emcee_worker(task):
     model_path = path.join(cache_path, 'model.pickle')
 
     sampler = None
+    logger.debug(path.exists(chain_path))
     if not path.exists(chain_path):
         logger.debug('Running MCMC for {0}'.format(apogee_id))
 
@@ -53,6 +54,7 @@ def emcee_worker(task):
             samples0 = JokerSamples.from_hdf5(f[apogee_id])
         logger.debug(samples0)
 
+        # This was having issues with the shape of samples0
         sample = MAP_sample(data, samples0, joker.params)
         model, samples, sampler = joker.mcmc_sample(data, sample,
                                                     n_burn=0,
@@ -71,8 +73,10 @@ def emcee_worker(task):
         logger.debug('Making plots for {0}'.format(apogee_id))
 
         if sampler is None:
+            # Why does the following code run with this chain
             chain = np.load(chain_path)
         else:
+            # But not this one
             chain = sampler.chain
 
         fig = plot_mcmc_diagnostic(chain)
@@ -86,3 +90,5 @@ def emcee_worker(task):
         fig = plot_data_orbits(data, samples)
         fig.savefig(orbits_plot_path, dpi=250)
         plt.close(fig)
+
+        logger.debug("Done plots for {0}".format(apogee_id))

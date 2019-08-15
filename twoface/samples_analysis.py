@@ -3,6 +3,8 @@ import astropy.units as u
 import numpy as np
 from thejoker.sampler.mcmc import TheJokerMCMCModel
 
+from twoface.log import log as logger
+
 __all__ = ['unimodal_P', 'max_likelihood_sample', 'MAP_sample']
 
 
@@ -58,16 +60,21 @@ def MAP_sample(data, samples, joker_params, return_index=False):
     """
     model = TheJokerMCMCModel(joker_params, data)
 
-    ln_ps = np.zeros(len(samples))
+    logger.debug(np.shape(samples))
 
     mcmc_p = model.pack_samples(samples)
-    logger.debug("in MAP",mcmc_p)
-    for i in range(len(samples)):
-        logger.debug("in loop",mcmc_p[i],mcmc_p.T[i])
+    ln_ps = np.zeros(len(mcmc_p))
+    logger.debug("in MAP {0} {1}".format(np.shape(mcmc_p),len(mcmc_p)))
+    for i in range(len(ln_ps)):
+        logger.debug("in loop {0} {1} {2}".format(i,len(mcmc_p[i]),len(mcmc_p.T[i])))
         ln_ps[i] = model.ln_posterior(mcmc_p.T[i])
+
+    logger.debug("done loop")
 
     if return_index:
         idx = np.argmax(ln_ps)
+        logger.debug("returning idx")
         return samples[idx], idx
     else:
+        logger.debug("returning")
         return samples[np.argmax(ln_ps)]

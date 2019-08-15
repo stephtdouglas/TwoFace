@@ -89,7 +89,7 @@ def plot_data_orbits(data, samples, n_orbits=128, jitter=None,
     data_plot_kwargs.setdefault('elinewidth', 1)
 
     plot_rv_curves(samples, t_grid, rv_unit=u.km/u.s, data=data, ax=ax,
-                   n_plot=min(len(samples['P']), n_orbits),
+                   #n_plot=min(len(samples['P']), n_orbits),
                    plot_kwargs=plot_kwargs,
                    data_plot_kwargs=data_plot_kwargs,
                    relative_to_t0=relative_to_t0)
@@ -100,13 +100,15 @@ def plot_data_orbits(data, samples, n_orbits=128, jitter=None,
 
         P_min_samples = samples[samples['P'].argmin()]
         plot_rv_curves(P_min_samples, t_grid, rv_unit=u.km/u.s, ax=ax,
-                       n_plot=1, plot_kwargs=dark_style,
+                       #n_plot=1, 
+                       plot_kwargs=dark_style,
                        relative_to_t0=relative_to_t0)
 
         # Darken the longest period sample
         P_max_samples = samples[samples['P'].argmax()]
         plot_rv_curves(P_max_samples, t_grid, rv_unit=u.km/u.s, ax=ax,
-                       n_plot=1, plot_kwargs=dark_style,
+                       #n_plot=1,
+                       plot_kwargs=dark_style,
                        relative_to_t0=relative_to_t0)
 
     if relative_to_t0:
